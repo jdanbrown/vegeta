@@ -165,7 +165,7 @@ func HTTP2(enabled bool) func(*Attacker) {
 // the rate specified for duration time. When the duration is zero the attack
 // runs until Stop is called. Results are put into the returned channel as soon
 // as they arrive.
-func (a *Attacker) Attack(tr Targeter, rate uint64, du time.Duration) <-chan *Result {
+func (a *Attacker) Attack(tr Targeter, rate float64, du time.Duration) <-chan *Result {
 	var workers sync.WaitGroup
 	results := make(chan *Result)
 	ticks := make(chan time.Time)
@@ -178,8 +178,11 @@ func (a *Attacker) Attack(tr Targeter, rate uint64, du time.Duration) <-chan *Re
 		defer close(results)
 		defer workers.Wait()
 		defer close(ticks)
-		interval := 1e9 / rate
-		hits := rate * uint64(du.Seconds())
+		interval := uint64(1e9 / rate)
+		hits := uint64(rate * du.Seconds())
+		if (hits == 0) {
+			hits = 1
+		}
 		began, done := time.Now(), uint64(0)
 		for {
 			now, next := time.Now(), began.Add(time.Duration(done*interval))

@@ -13,7 +13,7 @@ import (
 	"os/signal"
 	"time"
 
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/jdanbrown/vegeta/lib"
 )
 
 func attackCmd() command {
@@ -34,7 +34,7 @@ func attackCmd() command {
 	fs.BoolVar(&opts.lazy, "lazy", false, "Read targets lazily")
 	fs.DurationVar(&opts.duration, "duration", 0, "Duration of the test [0 = forever]")
 	fs.DurationVar(&opts.timeout, "timeout", vegeta.DefaultTimeout, "Requests timeout")
-	fs.Uint64Var(&opts.rate, "rate", 50, "Requests per second")
+	fs.Float64Var(&opts.rate, "rate", 50, "Requests per second")
 	fs.Uint64Var(&opts.workers, "workers", vegeta.DefaultWorkers, "Initial number of workers")
 	fs.IntVar(&opts.connections, "connections", vegeta.DefaultConnections, "Max open idle connections per target host")
 	fs.IntVar(&opts.redirects, "redirects", vegeta.DefaultRedirects, "Number of redirects to follow. -1 will not follow but marks as success")
@@ -66,7 +66,7 @@ type attackOpts struct {
 	lazy        bool
 	duration    time.Duration
 	timeout     time.Duration
-	rate        uint64
+	rate        float64
 	workers     uint64
 	connections int
 	redirects   int
